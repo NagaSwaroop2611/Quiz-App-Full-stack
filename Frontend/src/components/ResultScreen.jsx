@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { LogOut, RotateCcw } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,7 +17,6 @@ const ResultScreen = () => {
     noOfCorrectAnswers,
     noOfInCorrectAnswers,
     totalQuestions,
-    status,
     loading,
     error,
   } = useResultState();
@@ -39,7 +38,7 @@ const ResultScreen = () => {
     navigate(routes.protectedRoutes.questions);
   }, [navigate]);
 
-  // ✅ Merge correct + incorrect into one list with flag
+  // Merge correct + incorrect into one list with flag
   const displayQuestions = useMemo(() => {
     const formattedCorrect = correctAnswers.map((q) => ({
       ...q,
@@ -104,7 +103,7 @@ const ResultScreen = () => {
 
           <p className="text-center text-lg mb-6">
             You Have <span className="font-bold">Played a Total of</span>{" "}
-            {attempts.attempts} Quizzes
+            {attempts?.attempts ?? 0} Quizzes
           </p>
 
           {/* Circle Score */}
@@ -144,9 +143,9 @@ const ResultScreen = () => {
         <div className="card bg-base-100 shadow-2xl rounded-box p-8 max-h-[600px] overflow-y-auto">
           <h2 className="text-2xl font-bold mb-6 text-center">Your Answers</h2>
 
-          {loading || !displayQuestions.length ? (
+          {!displayQuestions.length ? (
             <div className="flex justify-center items-center h-24">
-              <span>Loading...</span>
+              <span>No answers available</span>
             </div>
           ) : (
             <>
@@ -165,8 +164,8 @@ const ResultScreen = () => {
                           : "bg-red-200 text-red-700"
                       }`}
                     >
-                      {question.submitted_answer.id}.{" "}
-                      {question.submitted_answer.value}
+                      {question.submitted_answer?.id ?? "-"}.
+                      {question.submitted_answer?.value ?? "Not Answered"}
                     </span>
                   </p>
 
@@ -174,7 +173,8 @@ const ResultScreen = () => {
                     <p>
                       <span className="font-semibold">Correct Answer:</span>
                       <span className="block bg-green-200 text-green-700 font-bold px-4 py-2 rounded mt-1">
-                        {question.answer.id}. {question.answer.value}
+                        {question.answer?.id ?? "-"}.{" "}
+                        {question.answer?.value ?? "N/A"}
                       </span>
                     </p>
                   )}
